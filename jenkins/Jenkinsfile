@@ -5,8 +5,7 @@ pipeline {
         stage ('build') {
             steps {
                 sh '''
-                //git clone git@github.com:mohil194250/orangebit-demo2.git
-                //cd ornagebit-demo2/
+                
                 sudo docker build -t humancloudak/k8-poc:$BRANCH_NAME .
                 sudo docker push humancloudak/k8-poc:$BRANCH_NAME'''
             }
