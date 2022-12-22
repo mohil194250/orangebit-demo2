@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace $BUILD_IDE"
-                sh "helm upgrade --install $BUILD_ID --set image.repository=humancloudak/k8-poc --set image.tag=$BUILD_ID --set image.pullPolicy=Always bitnami/apache -n $BUILD_IDE"
+                sh "helm upgrade --install $BUILD_ID --set image.repository=humancloudak/k8-poc --set image.tag=$BUILD_ID --set image.pullPolicy=Always bitnami/apache -n $BUILD_ID"
             }
         }
         
