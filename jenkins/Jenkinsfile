@@ -7,7 +7,7 @@ pipeline {
                 sh '''
                 
                 sudo docker build -t humancloudak/k8-poc .
-                sudo docker tag humancloudak/k8-poc humancloudak/k8-poc:$BRANCH_NAME
+                sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:$BRANCH_NAME
                 sudo docker push humancloudak/k8-poc:$BRANCH_NAME'''
             }
         }
