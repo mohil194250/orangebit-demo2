@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    parameters {
+        string( defaultValue: 'hello-world', description: "Project Name", name: 'PROJECT_NAME')
+        string( defaultValue: 'us-west-2', description: "Deployment Region", name: 'DEPLOYMENT_REGION')
+       // string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
+    }
+    stages {
+        
+        stage ('build') {
+            steps {
+                sh "sudo docker build -t humancloudak/k8-poc:$GIT_BRANCH ."
+                sh "sudo docker push humancloudak/k8-poc:$GIT_BRANCH"
+            }
+        }
+        stage ('Deploy') {
+            steps {
+                sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
+                sh "kubectl create namespace $GIT_BRANCH"
+                sh "helm upgrade --install $GIT_BRANCH --set image.repository=humancloudak/k8-poc --set image.tag=$GIT_BRANCH --set image.pullPolicy=Always bitnami/apache -n $GIT_BRANCH"
+            }
+        }
+        
+    }
+    
+}
+
+
+        // // stage ('deploy') {
+        //     if (env.branch_name == 'dev') {
+        //         sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n dev"
+        //     }
+        //     elif (env.branch_name == 'uat') {
+        //         sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n uat"
+        //     }
+        //     elif (env.branch_name == "prod") {
+        //         sh "helm upgrade --install eks-test-prod --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n prod"
+        //     }
+        // }
