@@ -1,0 +1,18 @@
+kind: Ingress
+metadata:
+    name: myingress
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+    ingressClassName: nginx
+    rules:
+      - host: ac696e3c363fd4db6a9e24e79835beca-1516758009.us-west-2.elb.amazonaws.com
+        http:
+          paths:
+            - pathType: Prefix
+              backend:
+                service:
+                  name: oragebitdemo-prasad-oragne-bit-demo
+                  port:
+                    number: 80
+              path: /demo1/prasad
