@@ -1,3 +1,3 @@
-FROM httpd:2.4
-COPY index.html /usr/local/apache2/htdocs/
+FROM nginx
+COPY index.html /usr/share/nginx/html
 EXPOSE 80
