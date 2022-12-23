@@ -1,12 +1,13 @@
 pipeline {
     agent any
+    parameters {
+         gitParameter branchFilter: 'origin/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
+    }
     stages {
-         parameters {
-             gitParameter branchFilter: 'origin/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
-           }
         stage ('build') {
             steps {
                 sh '''
+                git branch: "${params.BRANCH}", url: 'git@github.com:mohil194250/orangebit-demo2.git/'
                 sudo docker build -t humancloudak/k8-poc .
                 sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}
                 sudo docker push humancloudak/k8-poc:${params.BRANCH}'''
@@ -14,7 +15,7 @@ pipeline {
         }
         stage ('Deploy') {
             steps {
-                git branch: "${params.BRANCH}", url: 'git@github.com:mohil194250/orangebit-demo2.git/'
+                
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace ${params.BRANCH}"
                 sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
