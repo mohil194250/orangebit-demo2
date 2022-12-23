@@ -1,11 +1,13 @@
 pipeline {
     agent any
     parameters {
-         gitParameter branchFilter: 'origin/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
+         gitParameter branchFilter: 'origin/feature(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
     }
     stages {
         stage ('build') {
             steps {
+                
+                
           
                 sh "sudo docker build -t humancloudak/k8-poc ."
                 sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}"
