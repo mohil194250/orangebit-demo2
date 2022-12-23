@@ -20,7 +20,8 @@ pipeline {
                 
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace ${params.BRANCH}"
-                sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH}.${BUILD_ID} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
+                sh "helm upgrade --install oragebitdemo-${params.BRANCH} oragne-bit-demo/ --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH}.${BUILD_ID} -n ${params.BRANCH}"
+                 
             }
         }
         
