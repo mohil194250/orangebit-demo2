@@ -10,7 +10,8 @@ pipeline {
                 git branch: "${params.BRANCH}", url: 'git@github.com:mohil194250/orangebit-demo2.git/'
                 sudo docker build -t humancloudak/k8-poc .
                 sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}
-                sudo docker push humancloudak/k8-poc:${params.BRANCH}'''
+                sudo docker push humancloudak/k8-poc:${params.BRANCH}
+                '''
             }
         }
         stage ('Deploy') {
