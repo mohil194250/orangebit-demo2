@@ -1,37 +1,28 @@
 pipeline {
     agent any
+    parameters {
+         gitParameter branchFilter: 'origin/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
+    }
     stages {
-        
         stage ('build') {
             steps {
                 sh '''
-                BRANCH = $($GIT_BRANCH | cut -d "/" -f2)
+                git branch: "${params.BRANCH}", url: 'git@github.com:mohil194250/orangebit-demo2.git/'
+                echo "${params.BRANCH}"
                 sudo docker build -t humancloudak/k8-poc .
-                sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:$BRANCH
-                sudo docker push humancloudak/k8-poc:$BRANCH'''
+                sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}
+                sudo docker push humancloudak/k8-poc:${params.BRANCH}'''
             }
         }
         stage ('Deploy') {
             steps {
+                
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace $BRANCH"
-                sh "helm upgrade --install $BRANCH --set image.repository=humancloudak/k8-poc --set image.tag=$BRANCH --set image.pullPolicy=Always bitnami/apache -n $BRANCH"
+                sh "kubectl create namespace ${params.BRANCH}"
+                sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
             }
         }
         
     }
     
 }
-
-
-        // // stage ('deploy') {
-        //     if (env.branch_name == 'dev') {
-        //         sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n dev"
-        //     }
-        //     elif (env.branch_name == 'uat') {
-        //         sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n uat"
-        //     }
-        //     elif (env.branch_name == "prod") {
-        //         sh "helm upgrade --install eks-test-prod --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n prod"
-        //     }
-        // }
