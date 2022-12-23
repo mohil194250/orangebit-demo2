@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
          gitParameter branchFilter: 'origin/feature/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
-         namespace = $(kubectl get ns ${params.BRANCH} -o json | jq .status.phase -r)
+         //namespace = $(kubectl get ns ${params.BRANCH} -o json | jq .status.phase -r)
     }
     stages {
         stage ('build') {
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-               // sh "namespace=$(kubectl get ns ${params.BRANCH} -o json | jq .status.phase -r)"
+                namespace = $(kubectl get ns ${params.BRANCH} -o json | jq .status.phase -r) 
                 if ( $namespace == "Active" ) {
                         echo "Namespace exists"
                 } else {
