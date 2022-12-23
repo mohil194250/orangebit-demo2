@@ -1,21 +1,23 @@
 pipeline {
     agent any
     stages {
-        
+         parameters {
+             gitParameter branchFilter: 'origin/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
+           }
         stage ('build') {
             steps {
                 sh '''
                 BRANCH = $($GIT_BRANCH | cut -d "/" -f2)
                 sudo docker build -t humancloudak/k8-poc .
-                sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:$BRANCH
-                sudo docker push humancloudak/k8-poc:$BRANCH'''
+                sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}
+                sudo docker push humancloudak/k8-poc:${params.BRANCH}'''
             }
         }
         stage ('Deploy') {
             steps {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace $BUILD_ID"
-                sh "helm upgrade --install $BRANCH --set image.repository=humancloudak/k8-poc --set image.tag=$BRANCH --set image.pullPolicy=Always bitnami/apache -n $BRANCH"
+                sh "kubectl create namespace ${params.BRANCH}"
+                sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
             }
         }
         
