@@ -1,7 +1,7 @@
  #!/bin/bash
- namespace = $(kubectl get ns ${params.BRANCH} -o json | jq .status.phase -r) 
+ namespace = $(kubectl get ns $1 -o json | jq .status.phase -r) 
  if ( $namespace == "Active" ) {
       echo "Namespace exists"
  } else {
-      sh "kubectl create namespace ${params.BRANCH}"
+      sh "kubectl create namespace $1"
  }
