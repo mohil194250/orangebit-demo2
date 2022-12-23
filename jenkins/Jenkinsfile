@@ -7,8 +7,8 @@ pipeline {
         stage ('build') {
             steps {
                 sh "sudo docker build -t humancloudak/k8-poc ."
-                sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}"
-                sh "sudo docker push humancloudak/k8-poc:${params.BRANCH}"
+                sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${BRANCH}"
+                sh "sudo docker push humancloudak/k8-poc:${BRANCH}"
                 
             }
         }
@@ -16,8 +16,8 @@ pipeline {
             steps {
                 
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace ${params.BRANCH}"
-                sh "helm upgrade --install oragebitdemo-${params.BRANCH} oragne-bit-demo/ --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH} -n ${params.BRANCH}"
+                sh "kubectl create namespace ${BRANCH}"
+                sh "helm upgrade --install oragebitdemo-${BRANCH} oragne-bit-demo/ --set image.repository=humancloudak/k8-poc --set image.tag=${BRANCH} -n ${BRANCH}"
                  
             }
         }
