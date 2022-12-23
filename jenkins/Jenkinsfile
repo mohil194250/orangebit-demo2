@@ -10,8 +10,8 @@ pipeline {
                 
           
                 sh "sudo docker build -t humancloudak/k8-poc ."
-                sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}"
-                sh "sudo docker push humancloudak/k8-poc:${params.BRANCH}"
+                sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}.${BUILD_ID}"
+                sh "sudo docker push humancloudak/k8-poc:${params.BRANCH}.${BUILD_ID}"
                 
             }
         }
@@ -20,7 +20,7 @@ pipeline {
                 
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace ${params.BRANCH}"
-                sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
+                sh "helm upgrade --install ${params.BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH}.${BUILD_ID} --set image.pullPolicy=Always bitnami/apache -n ${params.BRANCH}"
             }
         }
         
