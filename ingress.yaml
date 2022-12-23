@@ -16,4 +16,4 @@ spec:
                   name: oragebitdemo-mohil-oragne-bit-demo
                   port:
                     number: 80
-              path: /demo2/mohil
+              path: /demo2/main
