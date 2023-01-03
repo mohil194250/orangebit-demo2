@@ -17,3 +17,5 @@ spec:
                   port:
                     number: 80
               path: /demo2/NAMESPACE
+              
+              
